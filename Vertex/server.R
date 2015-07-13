@@ -11,11 +11,17 @@ shinyServer(
      
     })
     
-    Data <- reactive({
+    DataDeg <- reactive({
         
       df <- filedata()
       vorder <-order(degree(df), decreasing=TRUE)
       DF <- data.frame(ID=as.numeric(V(df)[vorder]), degree=degree(df)[vorder])
+      
+    })
+    DataBtwn <- reactive({
+      df <- filedata()
+      vorder <- order(betweenness(df), decreasing = TRUE)
+      DF <- data.frame(ID=as.numeric(V(df)[vorder]), betweenness=betweenness(df)[vorder])
       
     })
     
@@ -29,21 +35,26 @@ shinyServer(
     }      
       )
     output$view <- renderTable({
-    
-      Data()
+     if(input$radio == "sorted-degree"){
+      DataDeg()
+     } else if(input$radio == "sorted-betweenness"){
+       DataBtwn()
+     }
       
     })
     
        output$downloadData <- downloadHandler(
       
        filename = function() {
-        paste("degree", '.csv', sep='')
+        paste(input$radio, '.csv', sep='')
       },
       
 
       content = function(file) {
-    
-      write.csv(Data(), file)
+      if(input$radio == "sorted-degree"){
+      write.csv(DataDeg(), file) }
+      else
+      write.csv(DataBtwn(), file)
       }
       
     )
