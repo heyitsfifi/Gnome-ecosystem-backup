@@ -8,10 +8,8 @@ shinyUI(fluidPage(
     sidebarPanel(
      
       fileInput("graph", label = h4("Pajek file")),
-      radioButtons("radio", "Type of centrality:", c("Degree" ="sorted-degree" , "Betweenness" = "sorted-betweenness")),
-      downloadButton("downloadData", "Download")
-     
-     
+      radioButtons("radio", "Type of centrality:", c("Degree" ="sorted-degree" , "Betweenness" = "sorted-betweenness", "Transitivity" = "sorted-transitivity")),
+      downloadButton("downloadData", "Download")     
     ),
     mainPanel( uiOutput("tb")             
                )                        

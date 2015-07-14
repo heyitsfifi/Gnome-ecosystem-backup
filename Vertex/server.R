@@ -24,6 +24,13 @@ shinyServer(
       DF <- data.frame(ID=as.numeric(V(df)[vorder]), betweenness=betweenness(df)[vorder])
       
     })
+    DataTrans <- reactive({
+      df <- filedata()
+      vorder <- order(transitivity(df, type="local"), decreasing = TRUE)
+      DF <- data.frame(ID=as.numeric(V(df)[vorder]), transitivity=transitivity(df, type="local")[vorder])
+      
+      
+    })
     
     output$tb <- renderUI({
       if(is.null(filedata()))
@@ -39,6 +46,8 @@ shinyServer(
       DataDeg()
      } else if(input$radio == "sorted-betweenness"){
        DataBtwn()
+     } else if(input$radio == "sorted-transitivity"){
+       DataTrans()
      }
       
     })
@@ -48,13 +57,15 @@ shinyServer(
        filename = function() {
         paste(input$radio, '.csv', sep='')
       },
-      
-
-      content = function(file) {
+     content = function(file) {
       if(input$radio == "sorted-degree"){
       write.csv(DataDeg(), file) }
-      else
+      else if(input$radio == "sorted-betweenness"){
       write.csv(DataBtwn(), file)
+      }
+      else if(input$radio == "sorted-transitivity"){
+        write.csv(DataTrans(), file)
+      }
       }
       
     )
